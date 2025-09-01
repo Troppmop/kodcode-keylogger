@@ -1,20 +1,23 @@
 import sys
 
+if len(sys.argv) != 3:
+    print("Usage: python decrypt.py <file> <password>")
+    sys.exit(1)
+
 file = sys.argv[1]
 password = sys.argv[2]
-contents = open(file,'r')
 
-def decrypt(logs, key):
+# Read the file in binary mode
+with open(file, 'rb') as f:
+    contents = f.read()
 
-    output = bytearray(len(logs))
+def decrypt(data: bytes, key: str) -> bytes:
     key_length = len(key)
-    for i in range(len(logs)):
-        output.append(logs[i] ^ key[i % key_length])
-    return output
+    return bytes([data[i] ^ ord(key[i % key_length]) for i in range(len(data))])
 
 decrypted_contents = decrypt(contents, password)
 
-sys.stdout.write(decrypted_contents)
+sys.stdout.write(decrypted_contents.decode('utf-8'))
 
 """
 decrypts the encrypted keylog file

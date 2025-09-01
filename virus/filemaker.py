@@ -4,7 +4,7 @@ class FileWriter:
     def write_data(self, data: list) -> None:
         contents = ""
         for i in data:
-            contents += i + "\n"
+            contents += str(i) + "\n"
         self.file.write(contents)
 
 """
