@@ -1,6 +1,6 @@
 class Encryptor:
     
-    def __init__(self,key:str, data: str):
+    def __init__(self,key:str, data: list):
         self.output = bytearray(len(data))
         self.key = key
         self.key_length = len(self.key)

