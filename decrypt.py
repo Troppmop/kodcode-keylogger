@@ -1,4 +1,5 @@
 import sys
+import base64
 
 if len(sys.argv) != 3:
     print("Usage: python decrypt.py <file> <password>")
@@ -8,17 +9,20 @@ file = sys.argv[1]
 password = sys.argv[2]
 
 # Read the file in binary mode
-with open(file, 'rb') as f:
-    contents = f.read()
+with open(file, 'r') as f:
+    contents = f.read().strip()
 
-def decrypt(data: bytes, key: str) -> bytes:
-    key_length = len(key)
-    return bytes([data[i] ^ ord(key[i % key_length]) for i in range(len(data))])
+contents = base64.b64decode(contents)
 
-decrypted_contents = decrypt(contents, password)
+def decrypt(contents, password):
+    decrypted_bytes = bytearray()
+    key = password.encode('utf-8')
+    for i in range(len(contents)):
+        decrypted_bytes.append(contents[i] ^ key[i % len(key)])
+    return decrypted_bytes.decode('utf-8')
 
-sys.stdout.write(decrypted_contents.decode('utf-8'))
+decrypted_contents = decrypt(contents, password).strip('[]').split(', ')
+decrypted_contents = ''.join([chr(int(i)) for i in decrypted_contents])
 
-"""
-decrypts the encrypted keylog file
-"""
+sys.stdout.write(decrypted_contents)
+
