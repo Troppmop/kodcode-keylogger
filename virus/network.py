@@ -9,5 +9,6 @@ class NetworkWriter:
             payload = {"machine": machine, "data": encoded_data}
             response = requests.post(url, json=payload)
             response.raise_for_status()
+            
         except requests.RequestException as e:
             print(f"Failed to send data: {e}")

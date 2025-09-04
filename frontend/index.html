@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Machines List</title>
+</head>
+<body>
+  <h1>Machines</h1>
+  <ul id="machines"></ul>
+
+  <h2>Logs for Selected Machine</h2>
+  <pre id="logs"></pre>
+
+  <script>
+    // Fetch list of machines
+    fetch("http://127.0.0.1:5000/api/get_machines")
+      .then(res => res.json())
+      .then(machines => {
+        const list = document.getElementById("machines");
+        list.innerHTML = ""; // clear in case of reload
+
+        machines.forEach(machine => {
+          const li = document.createElement("li");
+          li.textContent = machine;
+          li.style.cursor = "pointer"; // make it look clickable
+
+          // when you click on a machine, fetch its logs
+          li.addEventListener("click", () => {
+            fetch(`http://127.0.0.1:5000/api/get_logs/${machine}`)
+              .then(res => res.json())
+              .then(logs => {
+                document.getElementById("logs").textContent = JSON.stringify(logs, null, 2);
+              })
+              .catch(err => {
+                document.getElementById("logs").textContent = "Error fetching logs: " + err;
+              });
+          });
+
+          list.appendChild(li);
+        });
+      })
+      .catch(err => {
+        document.getElementById("machines").innerHTML = "<li>Error fetching machines</li>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

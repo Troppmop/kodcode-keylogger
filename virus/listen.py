@@ -32,6 +32,8 @@ class IKeyLogger:
     def get_logged_keys(self) -> list[str]:
         print(self.logged_keys)
         return self.logged_keys
+    def clear_logged_keys(self) -> None:
+        self.logged_keys = []
         
 
 """

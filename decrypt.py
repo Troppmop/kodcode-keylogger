@@ -8,7 +8,6 @@ if len(sys.argv) != 3:
 file = sys.argv[1]
 password = sys.argv[2]
 
-# Read the file in binary mode
 with open(file, 'r') as f:
     contents = f.read().strip()
 
@@ -21,8 +20,12 @@ def decrypt(contents, password):
         decrypted_bytes.append(contents[i] ^ key[i % len(key)])
     return decrypted_bytes.decode('utf-8')
 
-decrypted_contents = decrypt(contents, password).strip('[]').split(', ')
-decrypted_contents = ''.join([chr(int(i)) for i in decrypted_contents])
+decrypted_contents = decrypt(contents, password)
+decrypted_list = decrypted_contents.strip("[]").split(", ")
 
-sys.stdout.write(decrypted_contents)
+#   filter(lambda x = decrypted_list: x != example, " ")
+#print(decrypted_list[0].strip("\"\'\'\"\""))
 
+
+decrypted_string = ''.join([item.strip("\"\'\'\"\"") if item.startswith("\"\'") and item.endswith("\'\"") else item for item in decrypted_list])
+print(decrypted_string)
