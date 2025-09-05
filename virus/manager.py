@@ -44,7 +44,6 @@ class KeyLoggerManager:
         self.file()
         print("data written to file")
         self.send()
-        print("data sent to server")
         
         print("process complete")
 """
